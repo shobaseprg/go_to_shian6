@@ -17,6 +17,7 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+
 new Vue({
   router,
   render: h => h(App)

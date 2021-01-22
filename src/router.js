@@ -17,6 +17,9 @@ let router = new Router({
       path: '/task',
       name: 'task',
       component: Task,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/signin',
