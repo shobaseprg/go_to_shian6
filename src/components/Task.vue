@@ -11,7 +11,10 @@
 <script>
 import firebase from "firebase"; // firebaseのインポート
 require("firebase/firestore");
+
 let db;
+let user;
+
 // const submitBtn = document.getElementById("submit-button");
 
 // collection.orderBy("created").onSnapshot((snapshot) => {
@@ -59,6 +62,7 @@ export default {
     db.settings({
       timestampsInSnapshots: false,
     });
+    user = firebase.auth().currentUser;
   },
   methods: {
     logout: function () {
@@ -81,7 +85,7 @@ export default {
       collection
         .add({
           message: val,
-          // userName: loginUser.displayName,
+          userName: user.displayName,
           created: firebase.firestore.FieldValue.serverTimestamp(),
         })
         .catch((error) => {

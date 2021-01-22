@@ -16,9 +16,7 @@ export default {
       firebase
         .auth()
         .signInWithPopup(provider)
-        .then((result) => {
-          var user = result.user;
-          console.log(user.displayName);
+        .then(() => {
           this.$router.push("/task");
         });
     },
