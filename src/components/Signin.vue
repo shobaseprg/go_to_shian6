@@ -19,6 +19,7 @@ export default {
         .then((result) => {
           var user = result.user;
           console.log(user.displayName);
+          this.$router.push("/task");
         });
     },
   },

@@ -14,10 +14,9 @@ let router = new Router({
       redirect: 'signin'
     },
     {
-      path: '/',
+      path: '/task',
       name: 'task',
       component: Task,
-      meta: { requiresAuth: true }
     },
     {
       path: '/signin',
@@ -27,7 +26,6 @@ let router = new Router({
   ]
 })
 
-// ログインが完了していない場合にサインインページの飛ばす
 router.beforeEach((to, from, next) => {
   let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   let currentUser = firebase.auth().currentUser
