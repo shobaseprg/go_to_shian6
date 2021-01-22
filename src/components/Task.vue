@@ -1,6 +1,12 @@
 <template>
   <div id="task">
     <button type="button" @click="logout" id="logout">ログアウト</button>
+    <div v-for="chatMessage in chatMessages" :key="chatMessage.message">
+      <p>
+        {{ chatMessage.message }}<span>&emsp;by&emsp;</span
+        >{{ chatMessage.userName }}
+      </p>
+    </div>
     <form>
       <input type="text" v-model="message" id="message" />
       <div @click="send">送信</div>
@@ -14,47 +20,16 @@ require("firebase/firestore");
 
 let db;
 let user;
-
-// const submitBtn = document.getElementById("submit-button");
-
-// collection.orderBy("created").onSnapshot((snapshot) => {
-//   /* messageCollectionに変化があった場合 */
-//   snapshot.docChanges().forEach((change) => {
-//     /* snapshot.docChanges()の返り値は、コレクション自体 */
-//     if (change.type === "added") {
-//       /* コレクションのデータ変化が追加出会った場合？ */
-//       chatMessages.push(change.doc.data());
-//     }
-//   });
-// });
-
-// submitBtn.addEventListener("click", (e) => {
-//   e.preventDefault();
-
-// const val = message.value.trim();
-// if (val === "") return;
-
-// message.value = "";
-// message.focus();
-
-// collection
-//   .add({
-//     message: val,
-// userName: loginUser.displayName,
-// created: firebase.firestore.FieldValue.serverTimestamp(),
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//     });
-// });
-
-// message.focus();
+let collection;
+let chatMessages = [];
 
 export default {
   name: "logout",
-  data: function () {
+  data() {
     return {
       message: "",
+      d: "d",
+      chatMessages: chatMessages,
     };
   },
   created() {
@@ -62,7 +37,20 @@ export default {
     db.settings({
       timestampsInSnapshots: false,
     });
+    collection = db.collection("messages");
     user = firebase.auth().currentUser;
+
+    collection.orderBy("created").onSnapshot((snapshot) => {
+      /* messageCollectionに変化があった場合 */
+      snapshot.docChanges().forEach((change) => {
+        /* snapshot.docChanges()の返り値は、コレクション自体 */
+        if (change.type === "added") {
+          /* コレクションのデータ変化が追加出会った場合？ */
+          chatMessages.push(change.doc.data());
+          console.log(chatMessages);
+        }
+      });
+    });
   },
   methods: {
     logout: function () {
@@ -75,8 +63,6 @@ export default {
         });
     },
     send: function () {
-      let collection = db.collection("messages");
-
       let val = this.message.trim();
       if (val === "") return;
 
