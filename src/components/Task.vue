@@ -1,6 +1,10 @@
 <template>
   <div id="task">
-    <button type="button" @click="logout" id="logout">ログアウト</button>
+    <p>uid: {{ user_uid }}</p>
+    <p>
+      <button type="button" @click="logout" id="logout">ログアウト</button>
+    </p>
+
     <div v-for="chatMessage in chatMessages" :key="chatMessage.message">
       <p>
         {{ chatMessage.message }}<span>&emsp;by&emsp;</span
@@ -28,8 +32,8 @@ export default {
   data() {
     return {
       message: "",
-      d: "d",
       chatMessages: chatMessages,
+      user_uid: firebase.auth().currentUser.uid,
     };
   },
   created() {
@@ -39,7 +43,6 @@ export default {
     });
     collection = db.collection("messages");
     user = firebase.auth().currentUser;
-
     collection.orderBy("created").onSnapshot((snapshot) => {
       /* messageCollectionに変化があった場合 */
       snapshot.docChanges().forEach((change) => {
@@ -47,7 +50,6 @@ export default {
         if (change.type === "added") {
           /* コレクションのデータ変化が追加出会った場合？ */
           chatMessages.push(change.doc.data());
-          console.log(chatMessages);
         }
       });
     });
