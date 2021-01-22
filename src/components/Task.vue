@@ -10,12 +10,8 @@
 
 <script>
 import firebase from "firebase"; // firebaseのインポート
-
-// const db = firebase.firestore();
-// db.settings({
-//   timestampsInSnapshots: true,
-// });
-// const collection = db.collection("messages");
+require("firebase/firestore");
+let db;
 // const submitBtn = document.getElementById("submit-button");
 
 // collection.orderBy("created").onSnapshot((snapshot) => {
@@ -58,6 +54,12 @@ export default {
       message: "",
     };
   },
+  created() {
+    db = firebase.firestore();
+    db.settings({
+      timestampsInSnapshots: false,
+    });
+  },
   methods: {
     logout: function () {
       firebase
@@ -69,7 +71,22 @@ export default {
         });
     },
     send: function () {
-      console.log(this.message);
+      let collection = db.collection("messages");
+
+      let val = this.message.trim();
+      if (val === "") return;
+
+      this.message = "";
+
+      collection
+        .add({
+          message: val,
+          // userName: loginUser.displayName,
+          created: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
